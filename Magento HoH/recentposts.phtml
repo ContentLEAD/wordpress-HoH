@@ -1,0 +1,35 @@
+<?php
+/* 
+* magento headlines on homepage
+* put this file in app/design/frontend/base/default/template/wordpress/sidebar/widget/
+* add this code to any page in magento:
+*{{block type="wordpress/sidebar_widget_posts" name="wordpress.widget.recent_posts" post_count="3" title="Latest Blogs" excerpt="off" date="on" comment_num="off" template="wordpress/sidebar/widget/recentposts.phtml"}}
+* please note that it's necessary to add this to the raw html of the page, not the WYSIWYG.  
+* Click the button on the WYSIWYG to see the raw html.  Otherwise it will just show up as text.
+*
+* @category Fishpig
+* @package Fishpig_Wordpress
+* @license http://fishpig.co.uk/license.txt
+* @author Ben Tideswell <help@fishpig.co.uk>
+*/
+?>
+<?php $posts = $this->getPosts() ?>
+<?php if (count($posts) > 0): ?>
+<div>
+<ul id="<?php echo $this->getListId() ?>">
+<?php foreach($posts as $post): ?>
+<?php $post->setExcerptSize($this->getExcerptLength()) ?>
+<li>
+<?php echo $this->htmlEscape($post->getPostDate()) . ": "; ?>
+<a href="<?php echo $post->getPermalink() ?>" ><?php echo $this->htmlEscape($post->getPostTitle()) ?></a>
+
+<?php if ($this->canDisplayExcerpt()): ?>
+<a href="<?php echo $post->getPermalink() ?>" title="<?php echo $this->htmlEscape($post->getPostTitle()) ?>">
+<p><?php $content = $post->getPostExcerpt(); $content = strip_tags($content); echo substr($content, 0, 250); ?> ...</p>
+</a>
+<?php endif; ?>
+</li>
+<?php endforeach; ?>
+</ul>
+</div>
+<?php endif; ?>
