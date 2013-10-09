@@ -1,7 +1,7 @@
 <ul>
 <?php
 
-require('_plugins/site-pages/blog/wp-blog-header.php');
+require('blog/wp-blog-header.php');
 
  $recent = new WP_Query("posts_per_page=3&order=DESC&orderby=post_date"); while($recent->have_posts()) : $recent->the_post();
 
