@@ -26,19 +26,43 @@ class hohlist extends WP_Widget {
 function form($instance) {
 
 // Check values
+
 if( $instance) {
      $title = esc_attr($instance['title']);
- 
+     $byline= $instance['byline'];
+     $thumbnails = $instance['thumbnails'];
+     $date = $instance['date'];
+     $count = esc_attr($instance['count']);
 } else {
      $title = '';
-
+     $count = '';
+   
 }
+
 ?>
 
 <p>
-<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Widget Title', 'wp_widget_plugin'); ?></label>
 <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Widget Title', 'wp_widget_plugin'); ?></label>
 </p>
+<p>
+<input id="<?php echo $this->get_field_id('byline'); ?>" name="<?php echo $this->get_field_name('byline'); ?>" type="checkbox" <?php echo ($byline==true)?'checked': ''?> />
+<label for="<?php echo $this->get_field_id('byline'); ?>"><?php _e('Byline', 'wp_widget_plugin'); ?></label>
+</p>
+<p>
+<input  id="<?php echo $this->get_field_id('thumnails'); ?>" name="<?php echo $this->get_field_name('thumbnails'); ?>" type="checkbox" <?php echo ($thumbnails==true)?'checked': ''?> />
+<label for="<?php echo $this->get_field_id('thumbnails'); ?>"><?php _e('thumbnails', 'wp_widget_plugin'); ?></label>
+</p>
+<p>
+<input id="<?php echo $this->get_field_id('date'); ?>" name="<?php echo $this->get_field_name('date'); ?>" type="checkbox" <?php echo ($date==true)?'checked': ''?> />
+<label for="<?php echo $this->get_field_id('date'); ?>"><?php _e('date', 'wp_widget_plugin'); ?></label>
+</p>
+
+<p>
+<input width="3px" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>" type="text"  value="<?php echo $count; ?>" />
+<label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('count', 'wp_widget_plugin'); ?></label>
+</p>
+
 
 
 <?php
@@ -50,6 +74,10 @@ function update($new_instance, $old_instance) {
       $instance = $old_instance;
       // Fields
       $instance['title'] = strip_tags($new_instance['title']);
+      $instance['byline'] = $new_instance['byline'];
+      $instance['thumbnails'] = $new_instance['thumbnails'];
+      $instance['date'] = $new_instance['date'];
+      $instance['count'] = strip_tags($new_instance['count']);
 
      return $instance;
 }
@@ -58,6 +86,10 @@ function widget($args, $instance) {
    extract( $args );
    // these are the widget options
    $title = apply_filters('widget_title', $instance['title']);
+     $byline= $instance['byline'];
+     $thumbnails = $instance['thumbnails'];
+     $date = $instance['date'];
+     $count = esc_attr($instance['count']);
 
    echo $before_widget;
    // Display the widget
@@ -69,19 +101,24 @@ function widget($args, $instance) {
    }
 
  echo '<ul>';
- $recent = new WP_Query("posts_per_page=3&order=DESC&orderby=post_date"); while($recent->have_posts()) : $recent->the_post();
+ $recent = new WP_Query("posts_per_page=$count&order=DESC&orderby=post_date"); while($recent->have_posts()) : $recent->the_post();
 
                 echo '<li style="display:inline-block;padding:15px">'; ?>
                 <a href="<?php echo get_permalink(); ?>"><?php the_title(); ?></a> <br />
+                <?php if ($byline==true): ?>
+                <?php echo "by ".get_the_author()."<br />";?> 
+              <?php endif; ?>
+                <?php if ($date==true): ?>
                 <time datetime="<?php echo date(DATE_W3C); ?>" pubdate ><?php the_time('F jS, Y') ?></time>
-
-                <?php
+                   <?php endif; ?>
+                <?php if ($thumbnails==true):
 
                          if ( has_post_thumbnail() && ! post_password_required() ) : ?>
                         <div class="entry-thumbnail">
-                                <?php echo get_the_post_thumbnail(get_the_ID(), 'thumbnail'); ?>
+                                <a href="<?php echo get_permalink(); ?>"><?php echo get_the_post_thumbnail(get_the_ID(), 'thumbnail'); ?></a>
                                         </div>
                         <?php endif;
+                        endif;
 
                 echo'</li>';
         endwhile;
