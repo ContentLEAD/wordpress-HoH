@@ -32,6 +32,7 @@ if( $instance) {
      $byline= $instance['byline'];
      $thumbnails = $instance['thumbnails'];
      $date = $instance['date'];
+     $excerpt = $instance['excerpt'];
      $count = esc_attr($instance['count']);
 } else {
      $title = '';
@@ -57,6 +58,10 @@ if( $instance) {
 <input id="<?php echo $this->get_field_id('date'); ?>" name="<?php echo $this->get_field_name('date'); ?>" type="checkbox" <?php echo ($date==true)?'checked': ''?> />
 <label for="<?php echo $this->get_field_id('date'); ?>"><?php _e('date', 'wp_widget_plugin'); ?></label>
 </p>
+<p>
+<input id="<?php echo $this->get_field_id('excerpt'); ?>" name="<?php echo $this->get_field_name('excerpt'); ?>" type="checkbox" <?php echo ($excerpt==true)?'checked': ''?> />
+<label for="<?php echo $this->get_field_id('excerpt'); ?>"><?php _e('excerpt', 'wp_widget_plugin'); ?></label>
+</p>
 
 <p>
 <input width="3px" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>" type="text"  value="<?php echo $count; ?>" />
@@ -77,6 +82,7 @@ function update($new_instance, $old_instance) {
       $instance['byline'] = $new_instance['byline'];
       $instance['thumbnails'] = $new_instance['thumbnails'];
       $instance['date'] = $new_instance['date'];
+      $instance['excerpt'] = $new_instance['excerpt'];
       $instance['count'] = strip_tags($new_instance['count']);
 
      return $instance;
@@ -89,6 +95,7 @@ function widget($args, $instance) {
      $byline= $instance['byline'];
      $thumbnails = $instance['thumbnails'];
      $date = $instance['date'];
+      $excerpt = $instance['excerpt'];
      $count = esc_attr($instance['count']);
 
    echo $before_widget;
@@ -119,6 +126,18 @@ function widget($args, $instance) {
                                         </div>
                         <?php endif;
                         endif;
+
+                        if($excerpt==true):?>
+                          <div class="excerpt">
+                          <?php
+
+                          echo get_the_excerpt();
+
+                          ?>
+
+                          </div>
+<?php
+                          endif;
 
                 echo'</li>';
         endwhile;
